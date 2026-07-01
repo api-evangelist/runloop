@@ -1,0 +1,82 @@
+aid: runloop
+name: Runloop
+review:
+  question: Does Runloop expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-01'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Runloop's public surface is a
+    request/response REST API at https://api.runloop.ai/v1. Long-running
+    work (command execution, blueprint builds, scenario/benchmark runs) is
+    modeled with asynchronous REST: the client creates a resource and then
+    polls its status, or reads execution/build logs via REST log endpoints.
+    No WebSocket or Server-Sent Events transport is documented, so there is
+    no event-driven channel to model in AsyncAPI.
+findings:
+  summary: |
+    Runloop does not publish a documented public WebSocket API. The Runloop
+    platform exposes only REST (HTTPS) endpoints under
+    https://api.runloop.ai/v1, authenticated with a Bearer API key. Devbox
+    lifecycle, command execution, file access, tunnels, blueprints,
+    snapshots, code mounts, repositories, scenarios, benchmarks and objects
+    are all REST resources. Long-running operations use an async
+    create-then-poll pattern with REST status and log endpoints rather than
+    a streaming socket. Interactive shell access to a devbox is offered via
+    SSH and HTTP/TCP tunnels, which are connection primitives to the devbox
+    itself and not a documented WebSocket API surface of the Runloop
+    control plane. No ws:// or wss:// endpoint is documented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.runloop.ai/v1
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Runloop's API reference for devboxes, blueprints, scenarios, benchmarks, or any other surface as of the review date.
+    - protocol: SSE
+      scheme: https
+      documented: false
+      note: No Server-Sent Events streaming transport is documented; log retrieval is via REST log endpoints.
+  asyncPattern:
+    style: create-then-poll
+    note: Devbox command execution, blueprint builds and scenario/benchmark runs are created as resources and their status is polled; logs are fetched via REST log endpoints.
+  interactiveAccess:
+    - mechanism: SSH
+      note: Devboxes can be accessed over SSH via a create-SSH-key / connection flow; this is a shell into the devbox, not a WebSocket control-plane API.
+    - mechanism: Tunnels
+      note: HTTP/TCP tunnels expose ports on a running devbox; created and listed via REST, they are not a documented WebSocket API surface.
+  endpointsConfirmedRestFamilies:
+    - POST/GET/DELETE https://api.runloop.ai/v1/devboxes
+    - POST https://api.runloop.ai/v1/devboxes/{id}/execute_sync
+    - POST https://api.runloop.ai/v1/devboxes/{id}/execute_async
+    - POST https://api.runloop.ai/v1/devboxes/{id}/suspend | resume | shutdown | keep_alive
+    - POST https://api.runloop.ai/v1/devboxes/{id}/snapshot_disk
+    - GET/POST https://api.runloop.ai/v1/blueprints
+    - GET/DELETE https://api.runloop.ai/v1/snapshots
+    - GET/POST https://api.runloop.ai/v1/code_mounts
+    - GET/POST https://api.runloop.ai/v1/repositories
+    - GET/POST https://api.runloop.ai/v1/scenarios
+    - POST https://api.runloop.ai/v1/scenarios/{id}/start_run
+    - GET/POST https://api.runloop.ai/v1/benchmarks
+    - GET/POST https://api.runloop.ai/v1/objects
+sources:
+  - url: https://docs.runloop.ai/
+    type: Documentation
+    note: Overview and quickstart describe a REST API at api.runloop.ai/v1 with Bearer auth; no WebSocket mentioned.
+  - url: https://docs.runloop.ai/devboxes
+    type: Documentation
+    note: Devbox lifecycle and command execution are REST; logs are read via REST endpoints.
+  - url: https://docs.runloop.ai/api-reference
+    type: APIReference
+    note: All documented endpoints are HTTPS REST under /v1.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists to model, so no AsyncAPI
+    document was created. The catalog documents the REST surface only, and
+    the async create-then-poll pattern is captured in the OpenAPI and in
+    this review rather than as an event-driven AsyncAPI channel.

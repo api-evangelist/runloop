@@ -1,0 +1,230 @@
+aid: runloop
+url: https://raw.githubusercontent.com/api-evangelist/runloop/refs/heads/main/apis.yml
+name: Runloop
+kind: company
+description: Runloop provides AI-native cloud development environments (devboxes) and
+  an agent benchmarking platform. The Runloop API lets you programmatically spin up
+  isolated Linux devboxes, run and stream commands, mount code, snapshot state via
+  blueprints and snapshots, and evaluate coding agents against scenarios and
+  benchmarks - all over a Bearer-authenticated REST interface at api.runloop.ai/v1.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- AI
+- Developer Environments
+- Devboxes
+- Coding Agents
+- Benchmarking
+- Cloud IDE
+created: '2026-07-01'
+modified: '2026-07-01'
+specificationVersion: '0.19'
+apis:
+- aid: runloop:runloop-devboxes-api
+  name: Runloop Devboxes API
+  tags:
+  - Devboxes
+  - Compute
+  - Sandboxes
+  - Command Execution
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/devboxes
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/devboxes
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/devboxes
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Create and manage isolated cloud Linux devboxes - launch, suspend,
+    resume, shut down and keep-alive; execute shell commands synchronously or
+    asynchronously; stream logs; read, write, upload and download files; open
+    tunnels; and snapshot disk state.
+- aid: runloop:runloop-blueprints-api
+  name: Runloop Blueprints API
+  tags:
+  - Blueprints
+  - Images
+  - Build
+  - Reproducibility
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/blueprints
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/blueprints
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/blueprints
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Define and build custom, reproducible devbox base images from a
+    Dockerfile or system setup commands, preview builds, inspect build logs, and
+    reuse blueprints as the starting point for new devboxes.
+- aid: runloop:runloop-snapshots-api
+  name: Runloop Snapshots API
+  tags:
+  - Snapshots
+  - State
+  - Checkpoints
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/devboxes/snapshots
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/devboxes/snapshots
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/devboxes/snapshots
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Capture, list, query and delete point-in-time disk snapshots of a
+    running devbox (snapshot_disk on a devbox, plus the devboxes/disk_snapshots
+    management endpoints) so a new devbox can be launched from the exact saved
+    state.
+- aid: runloop:runloop-code-mounts-api
+  name: Runloop Code Mounts API
+  tags:
+  - Code Mounts
+  - Repositories
+  - Source Code
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/devboxes/code-mounts
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/devboxes/code-mounts
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/code-mounts
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Mount source code into a devbox at launch. Code mounts are
+    configured as CodeMount objects (repo owner/name, git ref, install command,
+    token) supplied in a devbox or blueprint create request rather than through
+    a standalone endpoint group, so agents start from a prepared, versioned
+    workspace.
+- aid: runloop:runloop-repositories-api
+  name: Runloop Repositories API
+  tags:
+  - Repositories
+  - Git
+  - Connections
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/repositories
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/repositories
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/repositories
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Connect Git repositories so their source can be mounted into
+    devboxes and blueprints. Repository access is expressed through CodeMount
+    configuration on devbox and blueprint creation rather than a separate
+    endpoint group, letting agents and scenarios start from real codebases.
+- aid: runloop:runloop-scenarios-api
+  name: Runloop Scenarios API
+  tags:
+  - Scenarios
+  - Agent Evaluation
+  - Scoring
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/scenarios
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/scenarios
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/scenarios
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Define reproducible coding-agent tasks with a starting environment,
+    input context and scoring contract; start scenario runs, then score and
+    complete them to measure agent performance.
+- aid: runloop:runloop-benchmarks-api
+  name: Runloop Benchmarks API
+  tags:
+  - Benchmarks
+  - Evaluation
+  - Leaderboards
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/benchmarks
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/benchmarks
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/benchmarks
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Group scenarios into benchmarks and run a coding agent across the
+    whole suite, aggregating per-scenario scores into a single benchmark run for
+    comparing agents and models.
+- aid: runloop:runloop-objects-api
+  name: Runloop Objects API
+  tags:
+  - Objects
+  - Blob Storage
+  - Artifacts
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.runloop.ai/objects
+  baseURL: https://api.runloop.ai/v1
+  properties:
+  - url: https://docs.runloop.ai/objects
+    type: Documentation
+  - url: https://docs.runloop.ai/api-reference/objects
+    type: APIReference
+  - url: openapi/runloop-openapi.yml
+    type: OpenAPI
+  - url: collections/runloop.postman_collection.json
+    type: PostmanCollection
+  - url: collections/runloop.opencollection.json
+    type: OpenCollection
+  description: Upload, list, download and delete binary objects (artifacts,
+    datasets, results) via pre-signed URLs for use as inputs to and outputs from
+    devboxes, scenarios and benchmarks.
+common:
+- type: GitHubOrganization
+  url: https://github.com/runloopai
+- type: LinkedIn
+  url: https://www.linkedin.com/company/runloopai
+- type: Website
+  url: https://www.runloop.ai/
+- type: Documentation
+  url: https://docs.runloop.ai/
+- type: Plans
+  url: plans/runloop-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/runloop-rate-limits.yml
+- type: FinOps
+  url: finops/runloop-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

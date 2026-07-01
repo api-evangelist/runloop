@@ -1,0 +1,70 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Runloop
+providerId: runloop
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: true
+tags:
+- AI
+- Developer Environments
+- Devboxes
+- Coding Agents
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Runloop does not publish numeric API request-per-minute limits in its docs or
+  OpenAPI spec; the primary account-level constraints are resource-count caps
+  (concurrent running devboxes and stored blueprints, snapshots and objects),
+  which are lowest on the free trial and raised on paid and Enterprise plans.
+  Documented trial caps are 3 running devboxes, 5 blueprints, 10 snapshots and
+  3 objects. Callers should still expect 429 throttling on abusive traffic and
+  back off accordingly.
+notes: >-
+  No per-minute request throttle numbers are publicly documented as of the
+  review date. Confirm any request-rate throttles and current resource caps in
+  the Runloop documentation and account console during reconciliation; caps
+  change by plan and negotiated agreement.
+sources:
+- https://docs.runloop.ai/
+- https://www.runloop.ai/pricing
+responseCodes:
+  throttled: 429
+limits:
+- name: API Requests Per Minute
+  scope: account
+  metric: requests
+  limit: not publicly documented
+  notes: No numeric per-minute throttle is published; expect 429 on abusive traffic.
+- name: Concurrent Running Devboxes
+  scope: account
+  metric: devboxes
+  limit: 3 on free trial; higher on paid / Enterprise
+  notes: Maximum number of simultaneously running devboxes; raised on paid and Enterprise plans.
+- name: Stored Blueprints
+  scope: account
+  metric: blueprints
+  limit: 5 on free trial; higher on paid / Enterprise
+  notes: Maximum number of stored blueprints on the free trial.
+- name: Stored Snapshots
+  scope: account
+  metric: snapshots
+  limit: 10 on free trial; higher on paid / Enterprise
+  notes: Maximum number of stored disk snapshots on the free trial.
+- name: Stored Objects
+  scope: account
+  metric: objects
+  limit: 3 on free trial; higher on paid / Enterprise
+  notes: Maximum number of stored objects on the free trial.
+policies:
+- name: Tiered Limits
+  description: Resource-count caps raise as accounts move from free trial to Basic, Pro and Enterprise plans.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter on 429 responses and honor any Retry-After header.
+- name: Idempotency
+  description: Devbox and run creation should be treated carefully on retry to avoid launching duplicate billable compute.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

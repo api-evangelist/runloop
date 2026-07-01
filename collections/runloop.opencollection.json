@@ -1,0 +1,450 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Runloop API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Devboxes",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Devbox.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create and launch a new devbox, optionally from a blueprint or snapshot."
+        },
+        {
+          "info": {
+            "name": "List Devboxes.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/devboxes"
+          },
+          "docs": "List devboxes for the account."
+        },
+        {
+          "info": {
+            "name": "Get Devbox details.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}"
+          },
+          "docs": "Get details for a single devbox."
+        },
+        {
+          "info": {
+            "name": "Suspend a Devbox.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/suspend"
+          },
+          "docs": "Suspend a running devbox to a resumable state; suspended devboxes accrue no compute."
+        },
+        {
+          "info": {
+            "name": "Resume a Devbox.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/resume"
+          },
+          "docs": "Resume a suspended devbox."
+        },
+        {
+          "info": {
+            "name": "Shutdown a Devbox.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/shutdown"
+          },
+          "docs": "Shut down a running devbox."
+        },
+        {
+          "info": {
+            "name": "Keep a Devbox alive.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/keep_alive"
+          },
+          "docs": "Reset the devbox idle timer."
+        },
+        {
+          "info": {
+            "name": "Execute a command asynchronously.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/execute_async",
+            "body": {
+              "type": "json",
+              "data": "{\"command\":\"echo hello\"}"
+            }
+          },
+          "docs": "Start a shell command and return an execution handle to poll or stream."
+        },
+        {
+          "info": {
+            "name": "Get an execution.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/devboxes/{devbox_id}/executions/{execution_id}"
+          },
+          "docs": "Get the status and output of an async execution."
+        },
+        {
+          "info": {
+            "name": "Read file contents.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/read_file_contents",
+            "body": {
+              "type": "json",
+              "data": "{\"file_path\":\"/home/user/file.txt\"}"
+            }
+          },
+          "docs": "Read text file contents from a devbox."
+        },
+        {
+          "info": {
+            "name": "Write file contents.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/write_file_contents",
+            "body": {
+              "type": "json",
+              "data": "{\"file_path\":\"/home/user/file.txt\",\"contents\":\"hello\"}"
+            }
+          },
+          "docs": "Write text file contents to a devbox."
+        },
+        {
+          "info": {
+            "name": "Enable a tunnel.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/enable_tunnel",
+            "body": {
+              "type": "json",
+              "data": "{\"port\":8080}"
+            }
+          },
+          "docs": "Expose a port on the devbox at a public URL."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Blueprints",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Blueprint.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/blueprints",
+            "body": {
+              "type": "json",
+              "data": "{\"name\":\"my-blueprint\"}"
+            }
+          },
+          "docs": "Create and build a reproducible devbox base image."
+        },
+        {
+          "info": {
+            "name": "List Blueprints.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/blueprints"
+          },
+          "docs": "List blueprints for the account."
+        },
+        {
+          "info": {
+            "name": "Get a Blueprint.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/blueprints/{id}"
+          },
+          "docs": "Get a single blueprint."
+        },
+        {
+          "info": {
+            "name": "Get Blueprint build logs.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/blueprints/{id}/logs"
+          },
+          "docs": "Get the build logs for a blueprint."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Snapshots",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Snapshot a Devbox disk.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/{id}/snapshot_disk",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Capture a point-in-time disk snapshot of a devbox."
+        },
+        {
+          "info": {
+            "name": "List disk snapshots.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/devboxes/disk_snapshots"
+          },
+          "docs": "List disk snapshots for the account."
+        },
+        {
+          "info": {
+            "name": "Delete a disk snapshot.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/devboxes/disk_snapshots/{id}/delete"
+          },
+          "docs": "Delete a disk snapshot."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Scenarios",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Scenario.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/scenarios",
+            "body": {
+              "type": "json",
+              "data": "{\"name\":\"my-scenario\"}"
+            }
+          },
+          "docs": "Define a reproducible coding-agent task with a scoring contract."
+        },
+        {
+          "info": {
+            "name": "Start a ScenarioRun.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/scenarios/start_run",
+            "body": {
+              "type": "json",
+              "data": "{\"scenario_id\":\"scn_123\"}"
+            }
+          },
+          "docs": "Start a new run of a scenario."
+        },
+        {
+          "info": {
+            "name": "Score a ScenarioRun.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/scenarios/runs/{id}/score"
+          },
+          "docs": "Score a scenario run against its scoring contract."
+        },
+        {
+          "info": {
+            "name": "Complete a ScenarioRun.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/scenarios/runs/{id}/complete"
+          },
+          "docs": "Complete a scenario run."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Benchmarks",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a Benchmark.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/benchmarks",
+            "body": {
+              "type": "json",
+              "data": "{\"name\":\"my-benchmark\",\"scenario_ids\":[]}"
+            }
+          },
+          "docs": "Group scenarios into a benchmark suite."
+        },
+        {
+          "info": {
+            "name": "Start a BenchmarkRun.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/benchmarks/start_run",
+            "body": {
+              "type": "json",
+              "data": "{\"benchmark_id\":\"bmk_123\"}"
+            }
+          },
+          "docs": "Run an agent across all scenarios in a benchmark."
+        },
+        {
+          "info": {
+            "name": "Get a BenchmarkRun.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/benchmarks/runs/{id}"
+          },
+          "docs": "Get the status and aggregated results of a benchmark run."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create an Object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.runloop.ai/v1/objects",
+            "body": {
+              "type": "json",
+              "data": "{\"name\":\"artifact.tar.gz\"}"
+            }
+          },
+          "docs": "Create an object record and receive a pre-signed upload URL."
+        },
+        {
+          "info": {
+            "name": "List Objects.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/objects"
+          },
+          "docs": "List objects for the account."
+        },
+        {
+          "info": {
+            "name": "Download an Object.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/objects/{id}/download"
+          },
+          "docs": "Generate a pre-signed download URL for an object."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the authenticated account.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.runloop.ai/v1/accounts/me"
+          },
+          "docs": "Get the account, tier and billing details for the API key."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

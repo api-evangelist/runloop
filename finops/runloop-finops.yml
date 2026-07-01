@@ -1,0 +1,118 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Runloop
+providerId: runloop
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: true
+tags:
+- AI
+- Developer Environments
+- Devboxes
+- Coding Agents
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Runloop spend. Runloop layers a monthly plan (Basic $0 / Pro
+  $250 / Enterprise custom) over usage-based compute and storage billed with no
+  minimums. The dominant cost is running devbox compute, metered at $0.108 per
+  CPU-hour plus $0.0252 per GB-of-memory-hour; suspended devboxes accrue $0
+  compute. Blueprint builds bill at $0.108 per CPU-hour. Devbox disk is $0.00034236
+  per GB-hour and blueprint / snapshot / object storage is $0.000072 per GB-hour.
+  Active Axons bill at $0.006 per axon-hour. The primary optimization levers are
+  suspending or shutting down idle devboxes, tuning keep-alive / idle windows,
+  right-sizing CPU and memory, and pruning stale snapshots and objects.
+notes: >-
+  Rates are as published on the Runloop pricing page at the time of writing and
+  are subject to change; verify during reconciliation.
+sources:
+- https://www.runloop.ai/pricing
+- https://docs.runloop.ai/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Runloop
+serviceCategory: Compute
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Runloop Devboxes
+  ServiceCategory: Compute
+  ProviderName: Runloop
+  PublisherName: Runloop
+  InvoiceIssuerName: Runloop
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Usage-Based
+meters:
+- name: devbox_cpu_hours
+  description: Running devbox CPU time, billed at $0.108 per CPU-hour.
+  unit: cpu_hours
+  aggregation: sum
+  dimensions:
+  - account
+  - devbox
+- name: devbox_memory_gb_hours
+  description: Running devbox memory, billed at $0.0252 per GB-hour.
+  unit: gb_hours
+  aggregation: sum
+  dimensions:
+  - account
+  - devbox
+- name: blueprint_build_cpu_hours
+  description: Blueprint image build CPU time, billed at $0.108 per CPU-hour.
+  unit: cpu_hours
+  aggregation: sum
+  dimensions:
+  - account
+  - blueprint
+- name: devbox_storage_gb_hours
+  description: Devbox disk storage, billed at $0.00034236 per GB-hour.
+  unit: gb_hours
+  aggregation: sum
+  dimensions:
+  - account
+  - devbox
+- name: artifact_storage_gb_hours
+  description: Blueprint, snapshot and object storage, billed at $0.000072 per GB-hour.
+  unit: gb_hours
+  aggregation: sum
+  dimensions:
+  - account
+  - resource_type
+- name: axon_active_hours
+  description: Active Axon event-stream time, billed at $0.006 per axon-hour.
+  unit: axon_hours
+  aggregation: sum
+  dimensions:
+  - account
+- name: axon_storage_gb_month
+  description: Inactive Axon storage, billed at $0.20 per GB-month.
+  unit: gb_month
+  aggregation: sum
+  dimensions:
+  - account
+principles:
+- name: Visibility
+  description: Track running-devbox count and per-devbox uptime; attribute devbox-hours to teams and agent-evaluation runs.
+- name: Allocation
+  description: Tag devboxes, scenarios and benchmarks per workload/team via metadata; map to internal cost centers.
+- name: Optimization
+  description: Suspend idle devboxes (suspended devboxes accrue $0 compute), set conservative keep-alive / idle windows, right-size CPU and memory, and prune stale snapshots and objects.
+- name: Accountability
+  description: Assign owners per project; review devbox-hour and storage spend monthly against budget.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

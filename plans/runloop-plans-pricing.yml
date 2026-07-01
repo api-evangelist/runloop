@@ -1,0 +1,227 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Runloop
+providerId: runloop
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: true
+tags:
+- AI
+- Developer Environments
+- Devboxes
+- Coding Agents
+- Benchmarking
+- Plans
+description: >-
+  Runloop combines a monthly plan (Basic / Pro / Enterprise) with usage-based
+  compute that is billed separately from the plan and has no minimums. Devbox
+  compute is metered per CPU-hour and per GB-of-memory-hour while running;
+  suspended devboxes accrue $0 compute. Blueprint builds are billed per
+  CPU-hour, and devbox disk plus blueprint / snapshot / object storage are
+  metered per GB-hour. Each plan includes a block of free storage. New accounts
+  get a free trial with credits and no card.
+notes: >-
+  Rates below are as published on the Runloop pricing page at the time of
+  writing and are subject to change - confirm current figures during
+  reconciliation.
+sources:
+- https://www.runloop.ai/pricing
+- https://docs.runloop.ai/
+plans:
+- id: runloop-trial
+  name: Free Trial
+  type: free
+  description: >-
+    New accounts receive $50 in credits with no credit card. Trial caps:
+    3 running devboxes, 5 blueprints, 10 snapshots, 3 objects.
+  entries:
+  - label: Trial Credit
+    name: trial_credit
+    type: free
+    metric: credit
+    limit: 50
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $50 in credits, no card required
+    userMultiplied: false
+  elements:
+  - name: Devboxes
+  - name: Blueprints
+  - name: Snapshots
+  - name: Objects
+  - name: Public Scenarios and Benchmarks
+- id: runloop-basic
+  name: Basic
+  type: free
+  description: >-
+    $0/month plus usage. Includes 100 GB free storage; public benchmarks,
+    devboxes, blueprints and snapshots; email support. First month free.
+  entries:
+  - label: Monthly Plan Fee
+    name: basic_plan
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0 per month plus usage
+    userMultiplied: false
+  - label: Included Storage
+    name: basic_included_storage
+    type: free
+    metric: gb
+    limit: 100
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 100 GB free storage included
+    userMultiplied: false
+  elements:
+  - name: Public Devboxes, Blueprints, Snapshots
+  - name: Public Benchmarks
+  - name: Email Support
+- id: runloop-pro
+  name: Pro
+  type: paid
+  description: >-
+    $250/month plus usage. Includes 1 TB free storage, suspend/resume, repo
+    connections, custom benchmarks, beta features and Slack support.
+  entries:
+  - label: Monthly Plan Fee
+    name: pro_plan
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $250 per month plus usage
+    userMultiplied: false
+  - label: Included Storage
+    name: pro_included_storage
+    type: free
+    metric: gb
+    limit: 1000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: 1 TB free storage included
+    userMultiplied: false
+  elements:
+  - name: Suspend / Resume
+  - name: Repository Connections
+  - name: Custom Benchmarks
+  - name: Beta Features
+  - name: Slack Support
+- id: runloop-usage
+  name: Usage-Based Compute and Storage
+  type: usage
+  description: >-
+    Metered compute and storage billed on top of any plan, with no minimums.
+    Suspended devboxes accrue $0 compute.
+  entries:
+  - label: Devbox CPU
+    name: devbox_cpu
+    type: usage
+    metric: cpu_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.108 per CPU-hour
+    userMultiplied: false
+  - label: Devbox Memory
+    name: devbox_memory
+    type: usage
+    metric: gb_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.0252 per GB-hour
+    userMultiplied: false
+  - label: Blueprint Build
+    name: blueprint_build
+    type: usage
+    metric: cpu_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.108 per CPU-hour
+    userMultiplied: false
+  - label: Devbox Storage
+    name: devbox_storage
+    type: usage
+    metric: gb_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.00034236 per GB-hour
+    userMultiplied: false
+  - label: Blueprint / Snapshot / Object Storage
+    name: artifact_storage
+    type: usage
+    metric: gb_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.000072 per GB-hour
+    userMultiplied: false
+  - label: Active Axon
+    name: axon_active
+    type: usage
+    metric: axon_hours
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.006 per axon-hour
+    userMultiplied: false
+  - label: Inactive Axon Storage
+    name: axon_storage
+    type: usage
+    metric: gb_month
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: $0.20 per GB-month
+    userMultiplied: false
+  elements:
+  - name: Devboxes
+  - name: Blueprints
+  - name: Snapshots
+  - name: Objects
+  - name: Scenarios
+  - name: Benchmarks
+- id: runloop-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom pricing adding reinforcement fine-tuning (RFT), VPC deployment,
+    priority support and custom storage. Contact Runloop sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Reinforcement Fine-Tuning (RFT)
+  - name: VPC Deployment
+  - name: Priority Support
+  - name: Custom Storage
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

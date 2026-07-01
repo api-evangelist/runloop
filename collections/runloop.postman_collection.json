@@ -1,0 +1,879 @@
+{
+  "item": [
+    {
+      "name": "Devboxes",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Create a Devbox.",
+          "request": {
+            "name": "Create a Devbox.",
+            "description": {
+              "content": "Create and launch a new devbox, optionally from a blueprint or snapshot.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-devbox\",\n  \"blueprint_id\": \"<string>\",\n  \"launch_parameters\": {\n    \"resource_size_request\": \"SMALL\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Devboxes.",
+          "request": {
+            "name": "List Devboxes.",
+            "description": {
+              "content": "List devboxes for the account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes"],
+              "host": ["{{baseUrl}}"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "disabled": true
+                }
+              ],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Get Devbox details.",
+          "request": {
+            "name": "Get Devbox details.",
+            "description": {
+              "content": "Get details for a single devbox.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Suspend a Devbox.",
+          "request": {
+            "name": "Suspend a Devbox.",
+            "description": {
+              "content": "Suspend a running devbox to a resumable state; suspended devboxes accrue no compute.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "suspend"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Resume a Devbox.",
+          "request": {
+            "name": "Resume a Devbox.",
+            "description": {
+              "content": "Resume a suspended devbox.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "resume"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Shutdown a Devbox.",
+          "request": {
+            "name": "Shutdown a Devbox.",
+            "description": {
+              "content": "Shut down a running devbox.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "shutdown"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Execute a command asynchronously.",
+          "request": {
+            "name": "Execute a command asynchronously.",
+            "description": {
+              "content": "Start a shell command and return an execution handle to poll or stream.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "execute_async"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"command\": \"echo hello\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get an execution.",
+          "request": {
+            "name": "Get an execution.",
+            "description": {
+              "content": "Get the status and output of an async execution.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":devbox_id", "executions", ":execution_id"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "devbox_id",
+                  "value": "<string>"
+                },
+                {
+                  "key": "execution_id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Read file contents.",
+          "request": {
+            "name": "Read file contents.",
+            "description": {
+              "content": "Read text file contents from a devbox.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "read_file_contents"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"file_path\": \"/home/user/file.txt\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Enable a tunnel.",
+          "request": {
+            "name": "Enable a tunnel.",
+            "description": {
+              "content": "Expose a port on the devbox at a public URL.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "enable_tunnel"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"port\": 8080\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Blueprints",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Create a Blueprint.",
+          "request": {
+            "name": "Create a Blueprint.",
+            "description": {
+              "content": "Create and build a reproducible devbox base image.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "blueprints"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-blueprint\",\n  \"system_setup_commands\": [\"apt-get install -y git\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Blueprints.",
+          "request": {
+            "name": "List Blueprints.",
+            "description": {
+              "content": "List blueprints for the account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "blueprints"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Get Blueprint build logs.",
+          "request": {
+            "name": "Get Blueprint build logs.",
+            "description": {
+              "content": "Get the build logs for a blueprint.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "blueprints", ":id", "logs"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Snapshots",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Snapshot a Devbox disk.",
+          "request": {
+            "name": "Snapshot a Devbox disk.",
+            "description": {
+              "content": "Capture a point-in-time disk snapshot of a devbox.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", ":id", "snapshot_disk"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-snapshot\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List disk snapshots.",
+          "request": {
+            "name": "List disk snapshots.",
+            "description": {
+              "content": "List disk snapshots for the account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", "disk_snapshots"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Delete a disk snapshot.",
+          "request": {
+            "name": "Delete a disk snapshot.",
+            "description": {
+              "content": "Delete a disk snapshot.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "devboxes", "disk_snapshots", ":id", "delete"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Scenarios",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Create a Scenario.",
+          "request": {
+            "name": "Create a Scenario.",
+            "description": {
+              "content": "Define a reproducible coding-agent task with a scoring contract.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "scenarios"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-scenario\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start a ScenarioRun.",
+          "request": {
+            "name": "Start a ScenarioRun.",
+            "description": {
+              "content": "Start a new run of a scenario.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "scenarios", "start_run"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scenario_id\": \"scn_123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Score a ScenarioRun.",
+          "request": {
+            "name": "Score a ScenarioRun.",
+            "description": {
+              "content": "Score a scenario run against its scoring contract.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "scenarios", "runs", ":id", "score"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Complete a ScenarioRun.",
+          "request": {
+            "name": "Complete a ScenarioRun.",
+            "description": {
+              "content": "Complete a scenario run.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "scenarios", "runs", ":id", "complete"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "POST",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Benchmarks",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Create a Benchmark.",
+          "request": {
+            "name": "Create a Benchmark.",
+            "description": {
+              "content": "Group scenarios into a benchmark suite.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "benchmarks"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"my-benchmark\",\n  \"scenario_ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start a BenchmarkRun.",
+          "request": {
+            "name": "Start a BenchmarkRun.",
+            "description": {
+              "content": "Run an agent across all scenarios in a benchmark.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "benchmarks", "start_run"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"benchmark_id\": \"bmk_123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get a BenchmarkRun.",
+          "request": {
+            "name": "Get a BenchmarkRun.",
+            "description": {
+              "content": "Get the status and aggregated results of a benchmark run.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "benchmarks", "runs", ":id"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Objects",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Create an Object.",
+          "request": {
+            "name": "Create an Object.",
+            "description": {
+              "content": "Create an object record and receive a pre-signed upload URL.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "objects"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"artifact.tar.gz\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Objects.",
+          "request": {
+            "name": "List Objects.",
+            "description": {
+              "content": "List objects for the account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "objects"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        },
+        {
+          "name": "Download an Object.",
+          "request": {
+            "name": "Download an Object.",
+            "description": {
+              "content": "Generate a pre-signed download URL for an object.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "objects", ":id", "download"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ]
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    },
+    {
+      "name": "Account",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "name": "Get the authenticated account.",
+          "request": {
+            "name": "Get the authenticated account.",
+            "description": {
+              "content": "Get the account, tier and billing details for the API key.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": ["v1", "accounts", "me"],
+              "host": ["{{baseUrl}}"],
+              "query": [],
+              "variable": []
+            },
+            "header": [],
+            "method": "GET",
+            "auth": null
+          },
+          "response": []
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.runloop.ai",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b7c1f0a2-5d3e-4a6b-9c8d-1e2f3a4b5c6d",
+    "name": "Runloop API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "AI-native cloud development environments (devboxes) and agent benchmarking. Base URL https://api.runloop.ai/v1 with Bearer API key auth.\n\nContact Support:\n Docs: https://docs.runloop.ai/",
+      "type": "text/plain"
+    }
+  }
+}
