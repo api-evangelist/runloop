@@ -211,6 +211,12 @@ apis:
     datasets, results) via pre-signed URLs for use as inputs to and outputs from
     devboxes, scenarios and benchmarks.
 common:
+- type: TrustCenter
+  url: security/runloop-trust-center.yml
+- type: DomainSecurity
+  url: security/runloop-domain-security.yml
+- type: Authentication
+  url: authentication/runloop-authentication.yml
 - type: GitHubOrganization
   url: https://github.com/runloopai
 - type: LinkedIn
@@ -225,6 +231,8 @@ common:
   url: rate-limits/runloop-rate-limits.yml
 - type: FinOps
   url: finops/runloop-finops.yml
+- type: Blog
+  url: https://runloop.ai/blog
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
