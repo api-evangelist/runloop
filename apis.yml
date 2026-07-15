@@ -211,6 +211,8 @@ apis:
     datasets, results) via pre-signed URLs for use as inputs to and outputs from
     devboxes, scenarios and benchmarks.
 common:
+- type: AgenticAccess
+  url: agentic-access/runloop-agentic-access.yml
 - type: TrustCenter
   url: security/runloop-trust-center.yml
 - type: DomainSecurity
