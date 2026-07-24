@@ -1,0 +1,192 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Object API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Object
+  description: Upload, list and download binary objects (blob storage).
+paths:
+  /v1/objects:
+    post:
+      operationId: createObject
+      tags:
+      - Object
+      summary: Create an Object
+      description: Create an object record and receive a pre-signed upload URL.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                content_type:
+                  type: string
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: The created Object with an upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectView'
+    get:
+      operationId: listObjects
+      tags:
+      - Object
+      summary: List Objects
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      responses:
+        '200':
+          description: A page of Objects.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ObjectView'
+                  has_more:
+                    type: boolean
+  /v1/objects/{id}:
+    get:
+      operationId: getObject
+      tags:
+      - Object
+      summary: Get an Object
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested Object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectView'
+  /v1/objects/{id}/complete:
+    post:
+      operationId: completeObject
+      tags:
+      - Object
+      summary: Complete an Object upload
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The completed Object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectView'
+  /v1/objects/{id}/download:
+    get:
+      operationId: downloadObject
+      tags:
+      - Object
+      summary: Generate a download URL for an Object
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: A pre-signed download URL.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  download_url:
+                    type: string
+  /v1/objects/{id}/delete:
+    post:
+      operationId: deleteObject
+      tags:
+      - Object
+      summary: Delete an Object
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: Object deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+  schemas:
+    ObjectView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        state:
+          type: string
+          enum:
+          - upload_in_progress
+          - read_only
+          - deleted
+        size_bytes:
+          type: integer
+          format: int64
+        content_type:
+          type: string
+        create_time_ms:
+          type: integer
+          format: int64
+        delete_after_time_ms:
+          type: integer
+          format: int64
+        upload_url:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

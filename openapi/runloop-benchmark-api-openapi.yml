@@ -1,0 +1,205 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Benchmark API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Benchmark
+  description: Group scenarios into benchmarks and run them.
+paths:
+  /v1/benchmarks:
+    post:
+      operationId: createBenchmark
+      tags:
+      - Benchmark
+      summary: Create a Benchmark
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              properties:
+                name:
+                  type: string
+                scenario_ids:
+                  type: array
+                  items:
+                    type: string
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: The created Benchmark.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkView'
+    get:
+      operationId: listBenchmarks
+      tags:
+      - Benchmark
+      summary: List Benchmarks
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      responses:
+        '200':
+          description: A page of Benchmarks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  benchmarks:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BenchmarkView'
+                  has_more:
+                    type: boolean
+  /v1/benchmarks/{id}:
+    get:
+      operationId: getBenchmark
+      tags:
+      - Benchmark
+      summary: Get a Benchmark
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested Benchmark.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkView'
+  /v1/benchmarks/start_run:
+    post:
+      operationId: startBenchmarkRun
+      tags:
+      - Benchmark
+      summary: Start a new BenchmarkRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - benchmark_id
+              properties:
+                benchmark_id:
+                  type: string
+                run_name:
+                  type: string
+      responses:
+        '200':
+          description: The started BenchmarkRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkRunView'
+  /v1/benchmarks/runs/{id}:
+    get:
+      operationId: getBenchmarkRun
+      tags:
+      - Benchmark
+      summary: Get a BenchmarkRun
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested BenchmarkRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BenchmarkRunView'
+components:
+  schemas:
+    BenchmarkRunView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        benchmark_id:
+          type: string
+        state:
+          type: string
+          enum:
+          - running
+          - completed
+          - canceled
+        start_time_ms:
+          type: integer
+          format: int64
+        duration_ms:
+          type: integer
+          format: int64
+        scenario_run_ids:
+          type: array
+          items:
+            type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    BenchmarkView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scenario_ids:
+          type: array
+          items:
+            type: string
+        is_public:
+          type: boolean
+        create_time_ms:
+          type: integer
+          format: int64
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+  parameters:
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

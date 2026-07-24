@@ -1,0 +1,51 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Account
+  description: Authenticated account information.
+paths:
+  /v1/accounts/me:
+    get:
+      operationId: getAccount
+      tags:
+      - Account
+      summary: Get the authenticated account
+      responses:
+        '200':
+          description: The authenticated account.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountView'
+components:
+  schemas:
+    AccountView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        tier:
+          type: string
+        account_status:
+          type: string
+        account_billing_type:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

@@ -1,0 +1,130 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Snapshot API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Snapshot
+  description: Manage devbox disk snapshots.
+paths:
+  /v1/devboxes/{id}/snapshot_disk:
+    post:
+      operationId: snapshotDisk
+      tags:
+      - Snapshot
+      summary: Snapshot the disk of a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: The created disk snapshot.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxSnapshotView'
+  /v1/devboxes/disk_snapshots:
+    get:
+      operationId: listDiskSnapshots
+      tags:
+      - Snapshot
+      summary: List disk snapshots
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      responses:
+        '200':
+          description: A page of disk snapshots.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  snapshots:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DevboxSnapshotView'
+                  has_more:
+                    type: boolean
+  /v1/devboxes/disk_snapshots/{id}/delete:
+    post:
+      operationId: deleteDiskSnapshot
+      tags:
+      - Snapshot
+      summary: Delete a disk snapshot
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: Snapshot deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    DevboxSnapshotView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        source_devbox_id:
+          type: string
+        status:
+          type: string
+        create_time_ms:
+          type: integer
+          format: int64
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

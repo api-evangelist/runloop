@@ -1,0 +1,249 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Scenario API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Scenario
+  description: Define and run coding-agent evaluation scenarios.
+paths:
+  /v1/scenarios:
+    post:
+      operationId: createScenario
+      tags:
+      - Scenario
+      summary: Create a Scenario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScenarioCreateParameters'
+      responses:
+        '200':
+          description: The created Scenario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioView'
+    get:
+      operationId: listScenarios
+      tags:
+      - Scenario
+      summary: List Scenarios
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      responses:
+        '200':
+          description: A page of Scenarios.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  scenarios:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScenarioView'
+                  has_more:
+                    type: boolean
+  /v1/scenarios/{id}:
+    get:
+      operationId: getScenario
+      tags:
+      - Scenario
+      summary: Get a Scenario
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested Scenario.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioView'
+  /v1/scenarios/start_run:
+    post:
+      operationId: startScenarioRun
+      tags:
+      - Scenario
+      summary: Start a new ScenarioRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - scenario_id
+              properties:
+                scenario_id:
+                  type: string
+                run_name:
+                  type: string
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: The started ScenarioRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioRunView'
+  /v1/scenarios/runs/{id}:
+    get:
+      operationId: getScenarioRun
+      tags:
+      - Scenario
+      summary: Get a ScenarioRun
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested ScenarioRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioRunView'
+  /v1/scenarios/runs/{id}/score:
+    post:
+      operationId: scoreScenarioRun
+      tags:
+      - Scenario
+      summary: Score a ScenarioRun
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The scored ScenarioRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioRunView'
+  /v1/scenarios/runs/{id}/complete:
+    post:
+      operationId: completeScenarioRun
+      tags:
+      - Scenario
+      summary: Complete a ScenarioRun
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The completed ScenarioRun.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScenarioRunView'
+components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    ScenarioView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        input_context:
+          type: object
+        scoring_contract:
+          type: object
+        reference_output:
+          type: string
+        is_public:
+          type: boolean
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    ScenarioRunView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scenario_id:
+          type: string
+        devbox_id:
+          type: string
+        benchmark_run_id:
+          type: string
+        state:
+          type: string
+          enum:
+          - running
+          - scoring
+          - scored
+          - completed
+          - canceled
+        scoring_contract_result:
+          type: object
+        start_time_ms:
+          type: integer
+          format: int64
+        duration_ms:
+          type: integer
+          format: int64
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    ScenarioCreateParameters:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        input_context:
+          type: object
+        environment_parameters:
+          type: object
+        scoring_contract:
+          type: object
+          description: Definition of the scorers used to grade a run of this scenario.
+        reference_output:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

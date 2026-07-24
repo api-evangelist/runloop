@@ -1,0 +1,672 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Devbox API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Devbox
+  description: Create, manage and run commands in cloud devboxes.
+paths:
+  /v1/devboxes:
+    post:
+      operationId: createDevbox
+      tags:
+      - Devbox
+      summary: Create a Devbox
+      description: Create and launch a new devbox, optionally from a blueprint or snapshot, with code mounts, environment variables and launch parameters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DevboxCreateParameters'
+      responses:
+        '200':
+          description: The created Devbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+    get:
+      operationId: listDevboxes
+      tags:
+      - Devbox
+      summary: List Devboxes
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      - name: status
+        in: query
+        schema:
+          type: string
+        description: Filter devboxes by status.
+      responses:
+        '200':
+          description: A page of Devboxes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxListView'
+  /v1/devboxes/{id}:
+    get:
+      operationId: getDevbox
+      tags:
+      - Devbox
+      summary: Get Devbox details
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested Devbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+    post:
+      operationId: updateDevbox
+      tags:
+      - Devbox
+      summary: Update a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: The updated Devbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+  /v1/devboxes/{id}/shutdown:
+    post:
+      operationId: shutdownDevbox
+      tags:
+      - Devbox
+      summary: Shutdown a running Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The Devbox after shutdown.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+  /v1/devboxes/{id}/suspend:
+    post:
+      operationId: suspendDevbox
+      tags:
+      - Devbox
+      summary: Suspend a running Devbox
+      description: Suspend a running devbox to a resumable state. Suspended devboxes accrue no compute charges.
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The suspended Devbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+  /v1/devboxes/{id}/resume:
+    post:
+      operationId: resumeDevbox
+      tags:
+      - Devbox
+      summary: Resume a suspended Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The resumed Devbox.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+  /v1/devboxes/{id}/keep_alive:
+    post:
+      operationId: keepAliveDevbox
+      tags:
+      - Devbox
+      summary: Reset the Devbox idle timer
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The Devbox with a reset idle timer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxView'
+  /v1/devboxes/{id}/usage:
+    get:
+      operationId: getDevboxUsage
+      tags:
+      - Devbox
+      summary: Get resource usage for a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: Usage details for the Devbox.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/devboxes/{id}/execute_async:
+    post:
+      operationId: executeAsync
+      tags:
+      - Devbox
+      summary: Asynchronously execute a shell command
+      description: Start a shell command on the devbox and return an execution handle to poll or stream.
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DevboxExecuteRequest'
+      responses:
+        '200':
+          description: The started asynchronous execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxAsyncExecutionDetailView'
+  /v1/devboxes/{id}/execute_sync:
+    post:
+      operationId: executeSync
+      tags:
+      - Devbox
+      summary: Synchronously execute a shell command (deprecated)
+      deprecated: true
+      description: Execute a command and wait for it to complete. Deprecated in favor of execute_async.
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DevboxExecuteRequest'
+      responses:
+        '200':
+          description: The completed execution result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxExecutionDetailView'
+  /v1/devboxes/{devbox_id}/executions/{execution_id}:
+    get:
+      operationId: getExecution
+      tags:
+      - Devbox
+      summary: Get the status of an async execution
+      parameters:
+      - $ref: '#/components/parameters/devboxIdPath'
+      - $ref: '#/components/parameters/executionIdPath'
+      responses:
+        '200':
+          description: The execution detail.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxAsyncExecutionDetailView'
+  /v1/devboxes/{devbox_id}/executions/{execution_id}/kill:
+    post:
+      operationId: killExecution
+      tags:
+      - Devbox
+      summary: Kill an async execution
+      parameters:
+      - $ref: '#/components/parameters/devboxIdPath'
+      - $ref: '#/components/parameters/executionIdPath'
+      responses:
+        '200':
+          description: The execution after being killed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DevboxAsyncExecutionDetailView'
+  /v1/devboxes/{id}/logs:
+    get:
+      operationId: getDevboxLogs
+      tags:
+      - Devbox
+      summary: Get Devbox logs
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The Devbox logs.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/devboxes/{id}/read_file_contents:
+    post:
+      operationId: readFileContents
+      tags:
+      - Devbox
+      summary: Read text file contents from a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file_path
+              properties:
+                file_path:
+                  type: string
+      responses:
+        '200':
+          description: The file contents.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  contents:
+                    type: string
+  /v1/devboxes/{id}/write_file_contents:
+    post:
+      operationId: writeFileContents
+      tags:
+      - Devbox
+      summary: Write text file contents to a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - file_path
+              - contents
+              properties:
+                file_path:
+                  type: string
+                contents:
+                  type: string
+      responses:
+        '200':
+          description: Write acknowledged.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/devboxes/{id}/upload_file:
+    post:
+      operationId: uploadFile
+      tags:
+      - Devbox
+      summary: Upload a binary file to a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Upload acknowledged.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/devboxes/{id}/download_file:
+    post:
+      operationId: downloadFile
+      tags:
+      - Devbox
+      summary: Download a binary file from a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - path
+              properties:
+                path:
+                  type: string
+      responses:
+        '200':
+          description: The file contents.
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+  /v1/devboxes/{id}/enable_tunnel:
+    post:
+      operationId: enableTunnel
+      tags:
+      - Devbox
+      summary: Enable a tunnel for a running Devbox
+      description: Expose a port on the devbox at a public URL.
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - port
+              properties:
+                port:
+                  type: integer
+      responses:
+        '200':
+          description: The tunnel details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TunnelView'
+  /v1/devboxes/{id}/remove_tunnel:
+    post:
+      operationId: removeTunnel
+      tags:
+      - Devbox
+      summary: Remove a tunnel from a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - port
+              properties:
+                port:
+                  type: integer
+      responses:
+        '200':
+          description: Tunnel removed.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/devboxes/{id}/create_ssh_key:
+    post:
+      operationId: createSshKey
+      tags:
+      - Devbox
+      summary: Create an SSH key for a Devbox
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The generated SSH key and connection details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  ssh_private_key:
+                    type: string
+                  url:
+                    type: string
+components:
+  schemas:
+    DevboxListView:
+      type: object
+      properties:
+        devboxes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DevboxView'
+        has_more:
+          type: boolean
+        total_count:
+          type: integer
+    DevboxCreateParameters:
+      type: object
+      properties:
+        name:
+          type: string
+        blueprint_id:
+          type: string
+        blueprint_name:
+          type: string
+        snapshot_id:
+          type: string
+        entrypoint:
+          type: string
+        environment_variables:
+          type: object
+          additionalProperties:
+            type: string
+        secrets:
+          type: object
+          additionalProperties:
+            type: string
+        code_mounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeMountParameters'
+        launch_parameters:
+          $ref: '#/components/schemas/LaunchParameters'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    DevboxAsyncExecutionDetailView:
+      type: object
+      properties:
+        devbox_id:
+          type: string
+        execution_id:
+          type: string
+        status:
+          type: string
+          enum:
+          - queued
+          - running
+          - completed
+        shell_name:
+          type: string
+        stdout:
+          type: string
+        stderr:
+          type: string
+        exit_status:
+          type: integer
+        stdout_truncated:
+          type: boolean
+        stderr_truncated:
+          type: boolean
+    DevboxExecuteRequest:
+      type: object
+      required:
+      - command
+      properties:
+        command:
+          type: string
+        shell_name:
+          type: string
+    CodeMountParameters:
+      type: object
+      description: Configuration for mounting a Git repository into a devbox or blueprint.
+      properties:
+        repo_name:
+          type: string
+        repo_owner:
+          type: string
+        git_ref:
+          type: string
+        install_command:
+          type: string
+        token:
+          type: string
+        type:
+          type: string
+          enum:
+          - code_mount
+    LaunchParameters:
+      type: object
+      properties:
+        resource_size_request:
+          type: string
+        custom_cpu_cores:
+          type: integer
+        custom_gb_memory:
+          type: integer
+        custom_disk_size:
+          type: integer
+        architecture:
+          type: string
+        keep_alive_time_seconds:
+          type: integer
+        after_idle:
+          type: object
+        available_ports:
+          type: array
+          items:
+            type: integer
+        launch_commands:
+          type: array
+          items:
+            type: string
+    DevboxExecutionDetailView:
+      type: object
+      properties:
+        devbox_id:
+          type: string
+        execution_id:
+          type: string
+        stdout:
+          type: string
+        stderr:
+          type: string
+        exit_status:
+          type: integer
+    TunnelView:
+      type: object
+      properties:
+        port:
+          type: integer
+        url:
+          type: string
+    DevboxView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - provisioning
+          - initializing
+          - running
+          - suspended
+          - shutdown
+          - failure
+        create_time_ms:
+          type: integer
+          format: int64
+        end_time_ms:
+          type: integer
+          format: int64
+        blueprint_id:
+          type: string
+        snapshot_id:
+          type: string
+        launch_parameters:
+          $ref: '#/components/schemas/LaunchParameters'
+        tunnel:
+          $ref: '#/components/schemas/TunnelView'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        failure_reason:
+          type: string
+        shutdown_reason:
+          type: string
+  parameters:
+    executionIdPath:
+      name: execution_id
+      in: path
+      required: true
+      schema:
+        type: string
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+    devboxIdPath:
+      name: devbox_id
+      in: path
+      required: true
+      schema:
+        type: string
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'

@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: Runloop Account Blueprint API
+  description: Representative OpenAPI description of the Runloop API - AI-native cloud development environments (devboxes) and an agent benchmarking platform. Endpoints cover devbox lifecycle and command execution, blueprints, disk snapshots, code mounts / repositories (via CodeMount configuration), scenarios, benchmarks and objects. All requests are authenticated with a Bearer API key. This is a faithful representative subset of the full Stainless-generated Runloop specification.
+  termsOfService: https://www.runloop.ai/
+  contact:
+    name: Runloop Support
+    url: https://docs.runloop.ai/
+  version: '1.0'
+servers:
+- url: https://api.runloop.ai
+  description: Runloop production API
+security:
+- bearerAuth: []
+tags:
+- name: Blueprint
+  description: Build reproducible devbox base images.
+paths:
+  /v1/blueprints:
+    post:
+      operationId: createBlueprint
+      tags:
+      - Blueprint
+      summary: Create and build a Blueprint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintCreateParameters'
+      responses:
+        '200':
+          description: The created Blueprint.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintView'
+    get:
+      operationId: listBlueprints
+      tags:
+      - Blueprint
+      summary: List Blueprints
+      parameters:
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/startingAfter'
+      responses:
+        '200':
+          description: A page of Blueprints.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blueprints:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BlueprintView'
+                  has_more:
+                    type: boolean
+  /v1/blueprints/{id}:
+    get:
+      operationId: getBlueprint
+      tags:
+      - Blueprint
+      summary: Get a Blueprint
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The requested Blueprint.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintView'
+  /v1/blueprints/{id}/delete:
+    post:
+      operationId: deleteBlueprint
+      tags:
+      - Blueprint
+      summary: Delete a Blueprint
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: Blueprint deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+  /v1/blueprints/preview:
+    post:
+      operationId: previewBlueprint
+      tags:
+      - Blueprint
+      summary: Preview the Dockerfile for a Blueprint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintCreateParameters'
+      responses:
+        '200':
+          description: The previewed Dockerfile.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  dockerfile:
+                    type: string
+  /v1/blueprints/{id}/logs:
+    get:
+      operationId: getBlueprintLogs
+      tags:
+      - Blueprint
+      summary: Get Blueprint build logs
+      parameters:
+      - $ref: '#/components/parameters/idPath'
+      responses:
+        '200':
+          description: The build logs.
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    BlueprintCreateParameters:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        base_blueprint_id:
+          type: string
+        base_blueprint_name:
+          type: string
+        dockerfile:
+          type: string
+        system_setup_commands:
+          type: array
+          items:
+            type: string
+        code_mounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CodeMountParameters'
+        launch_parameters:
+          $ref: '#/components/schemas/LaunchParameters'
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    BlueprintView:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum:
+          - provisioning
+          - building
+          - build_complete
+          - failed
+          - deleted
+        create_time_ms:
+          type: integer
+          format: int64
+        dockerfile:
+          type: string
+        failure_reason:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+    CodeMountParameters:
+      type: object
+      description: Configuration for mounting a Git repository into a devbox or blueprint.
+      properties:
+        repo_name:
+          type: string
+        repo_owner:
+          type: string
+        git_ref:
+          type: string
+        install_command:
+          type: string
+        token:
+          type: string
+        type:
+          type: string
+          enum:
+          - code_mount
+    LaunchParameters:
+      type: object
+      properties:
+        resource_size_request:
+          type: string
+        custom_cpu_cores:
+          type: integer
+        custom_gb_memory:
+          type: integer
+        custom_disk_size:
+          type: integer
+        architecture:
+          type: string
+        keep_alive_time_seconds:
+          type: integer
+        after_idle:
+          type: object
+        available_ports:
+          type: array
+          items:
+            type: integer
+        launch_commands:
+          type: array
+          items:
+            type: string
+  parameters:
+    startingAfter:
+      name: starting_after
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor for pagination; return items after this id.
+    idPath:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+      description: Number of items to return.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: 'Runloop API key sent as: Authorization Bearer <API_KEY>.'
