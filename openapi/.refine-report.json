@@ -1,0 +1,26 @@
+{
+  "provider": "runloop",
+  "sources": [
+    "runloop-account-api-openapi.yml",
+    "runloop-benchmark-api-openapi.yml",
+    "runloop-blueprint-api-openapi.yml",
+    "runloop-devbox-api-openapi.yml",
+    "runloop-object-api-openapi.yml",
+    "runloop-scenario-api-openapi.yml",
+    "runloop-snapshot-api-openapi.yml"
+  ],
+  "outputs": [
+    "runloop-account-api-openapi.yml",
+    "runloop-benchmark-api-openapi.yml",
+    "runloop-blueprint-api-openapi.yml",
+    "runloop-devbox-api-openapi.yml",
+    "runloop-object-api-openapi.yml",
+    "runloop-scenario-api-openapi.yml",
+    "runloop-snapshot-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
